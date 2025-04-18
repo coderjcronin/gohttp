@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"sort"
+	"strings"
 
 	"github.com/coderjcronin/gohttp/internal/auth"
 	"github.com/coderjcronin/gohttp/internal/database"
@@ -98,6 +100,13 @@ func (cfg *apiConfig) apiGetChirps(w http.ResponseWriter, r *http.Request) {
 			respondWithError(w, http.StatusInternalServerError, "Could not retrieve chirps", err)
 			return
 		}
+	}
+
+	q := r.URL.Query().Get("sort")
+	if strings.EqualFold("desc", q) {
+		sort.Slice(ch, func(i, j int) bool {
+			return ch[i].CreatedAt.After(ch[j].CreatedAt)
+		})
 	}
 
 	returnSlice := []returnChirp{}
