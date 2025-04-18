@@ -18,6 +18,7 @@ type apiConfig struct {
 	db             *database.Queries
 	secret         string
 	expires        time.Duration
+	polka_key      string
 }
 
 func main() {
@@ -25,6 +26,7 @@ func main() {
 	dbURL := os.Getenv("DB_URL")
 	apiSecret := os.Getenv("SECRET")
 	stringExp := os.Getenv("EXPIRES")
+	polkaKey := os.Getenv("POLKA_KEY")
 
 	durationExp, _ := time.ParseDuration(stringExp)
 
@@ -44,6 +46,7 @@ func main() {
 		db:             dbQueries,
 		secret:         apiSecret,
 		expires:        durationExp,
+		polka_key:      polkaKey,
 	}
 
 	mux := http.NewServeMux()

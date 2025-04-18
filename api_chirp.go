@@ -78,10 +78,26 @@ func (cfg *apiConfig) apiGetChirps(w http.ResponseWriter, r *http.Request) {
 		UserId    uuid.UUID `json:"user_id"`
 	}
 
-	ch, err := cfg.db.RetrieveAllChirps(r.Context())
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Could not retrieve chirps", err)
-		return
+	var ch []database.Chirp
+	var err error
+
+	s := r.URL.Query().Get("author_id")
+	if s != "" {
+		userID, err := uuid.Parse(s)
+		if err != nil {
+			respondWithError(w, http.StatusBadRequest, "Invalid Author ID", err)
+			return
+		}
+		ch, err = cfg.db.RetrieveChirpsByAuthor(r.Context(), userID)
+		if err != nil {
+			respondWithError(w, http.StatusNotFound, "No chirps found", err)
+		}
+	} else {
+		ch, err = cfg.db.RetrieveAllChirps(r.Context())
+		if err != nil {
+			respondWithError(w, http.StatusInternalServerError, "Could not retrieve chirps", err)
+			return
+		}
 	}
 
 	returnSlice := []returnChirp{}
