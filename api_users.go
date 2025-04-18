@@ -24,6 +24,7 @@ func (cfg *apiConfig) apiCheckLogin(w http.ResponseWriter, r *http.Request) {
 		Email        string    `json:"email"`
 		Token        string    `json:"token"`
 		RefreshToken string    `json:"refresh_token"`
+		IsChirpyRed  bool      `json:"is_chirpy_red"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -76,6 +77,7 @@ func (cfg *apiConfig) apiCheckLogin(w http.ResponseWriter, r *http.Request) {
 		Email:        user.Email,
 		Token:        issuedToken,
 		RefreshToken: refreshToken,
+		IsChirpyRed:  user.IsChirpyRed.Bool,
 	})
 }
 
@@ -85,10 +87,11 @@ func (cfg *apiConfig) apiAddUser(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password"`
 	}
 	type returnVals struct {
-		Id        uuid.UUID `json:"id"`
-		CreatedAt string    `json:"created_at"`
-		UpdatedAt string    `json:"updated_at"`
-		Email     string    `json:"email"`
+		Id          uuid.UUID `json:"id"`
+		CreatedAt   string    `json:"created_at"`
+		UpdatedAt   string    `json:"updated_at"`
+		Email       string    `json:"email"`
+		IsChirpyRed bool      `json:"is_chirpy_red"`
 	}
 
 	decoder := json.NewDecoder(r.Body)
@@ -117,10 +120,11 @@ func (cfg *apiConfig) apiAddUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusCreated, returnVals{
-		Id:        u.ID,
-		CreatedAt: u.CreatedAt.String(),
-		UpdatedAt: u.UpdatedAt.String(),
-		Email:     u.Email,
+		Id:          u.ID,
+		CreatedAt:   u.CreatedAt.String(),
+		UpdatedAt:   u.UpdatedAt.String(),
+		Email:       u.Email,
+		IsChirpyRed: u.IsChirpyRed.Bool,
 	})
 
 }
@@ -201,10 +205,11 @@ func (cfg *apiConfig) apidUpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	type returnVals struct {
-		Id        uuid.UUID `json:"id"`
-		CreatedAt string    `json:"created_at"`
-		UpdatedAt string    `json:"updated_at"`
-		Email     string    `json:"email"`
+		Id          uuid.UUID `json:"id"`
+		CreatedAt   string    `json:"created_at"`
+		UpdatedAt   string    `json:"updated_at"`
+		Email       string    `json:"email"`
+		IsChirpyRed bool      `json:"is_chirpy_red"`
 	}
 
 	authToken, err := auth.GetBearerToken(r.Header)
@@ -244,10 +249,11 @@ func (cfg *apiConfig) apidUpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	respondWithJSON(w, http.StatusOK, returnVals{
-		Id:        updatedRecord.ID,
-		CreatedAt: updatedRecord.CreatedAt.String(),
-		UpdatedAt: updatedRecord.UpdatedAt.String(),
-		Email:     updatedRecord.Email,
+		Id:          updatedRecord.ID,
+		CreatedAt:   updatedRecord.CreatedAt.String(),
+		UpdatedAt:   updatedRecord.UpdatedAt.String(),
+		Email:       updatedRecord.Email,
+		IsChirpyRed: updatedRecord.IsChirpyRed.Bool,
 	})
 
 }
